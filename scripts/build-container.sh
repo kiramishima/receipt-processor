@@ -1,0 +1,1 @@
+docker build --tag go-receipt-app -f ./deploy/Dockerfile .

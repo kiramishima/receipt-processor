@@ -1,0 +1,34 @@
+# https://taskfile.dev
+
+version: '3'
+
+
+env:
+  # App
+  API_NAME: receipt_api
+  MODE: Development
+    # HTTP
+  HTTP_SERVER_IDLE_TIMEOUT: 60s
+  PORT: 8080
+  HTTP_SERVER_READ_TIMEOUT: 1s
+  HTTP_SERVER_WRITE_TIMEOUT: 2s
+
+tasks:
+  build:
+    cmds:
+      - env CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -a -installsuffix cgo -o bin/api/$API_NAME ./cmd/api/main.go
+
+  test:
+    desc: Run all tests ignoring cache
+    cmds:
+      - go test -cover -v ./... -count=1
+
+  run:
+    deps:
+      - build
+    cmds:
+      - bin/api/$API_NAME
+
+  clean:
+    cmds:
+      - rm -fr ./bin
